@@ -30,6 +30,7 @@ pyright_output.json
 .env
 .env.*
 !.env.example
+/.rws.yaml
 
 # Editor / OS noise
 .DS_Store
