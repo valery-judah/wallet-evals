@@ -1,0 +1,94 @@
+# wallet-evals
+
+Bootstrapable Python project with a clean command model:
+
+- `uv` manages environments and dependencies.
+- `uv run poe <task>` runs Python developer workflows.
+- `make <target>` is reserved for repo setup wrappers.
+
+## Requirements
+- Python 3.11+
+- `uv`
+
+## Initialize The Repo
+```bash
+make init
+uv run poe verify
+```
+
+## Run
+```bash
+uv run poe run
+```
+
+## Command Model
+Use Poe for Python work:
+
+```bash
+uv run poe fmt
+uv run poe fmt-check
+uv run poe lint
+uv run poe type
+uv run poe test
+uv run poe verify
+uv run poe run
+uv run poe build
+uv run poe clean
+```
+
+Use `make` for repo setup wrappers:
+
+```bash
+make help
+make init
+make install-git-hooks
+```
+
+## Secret Scanning
+
+This repo includes a local Gemini API key scan for strings that match the format-aware
+`AIza[A-Za-z0-9_-]{35}` pattern. Version 1 scans only Gemini-style keys, has no allowlist, and
+keeps CI `gitleaks` checks as separate defense in depth.
+
+Run a repo-wide audit of tracked files:
+
+```bash
+uv run poe secret-scan
+```
+
+Install the repo-managed pre-commit hook:
+
+```bash
+make install-git-hooks
+```
+
+After installation, each commit scans staged added lines only. It does not scan unchanged old
+lines, full git history, or non-staged working tree changes.
+
+## Dependencies
+- Add a runtime dependency: `uv add <package>`
+- Add a dev dependency: `uv add --dev <package>`
+- Sync lockfile + env: `uv sync --group dev`
+
+## Project layout
+```text
+docs/
+scripts/
+src/wallet_evals/
+tests/
+poe_tasks.toml
+```
+
+## Configuration
+- Packaging and tooling: `pyproject.toml`
+- Python task catalog: `poe_tasks.toml`
+- Canonical docs scaffold: `docs/`
+
+## Contributing
+See `CONTRIBUTING.md`.
+
+## Security
+See `SECURITY.md`.
+
+## License
+Add a `LICENSE` file (MIT/Apache-2.0/BSD-3-Clause/etc.) and update this section.
