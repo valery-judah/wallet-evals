@@ -1,0 +1,15 @@
+{
+  "schema_version": "1.0",
+  "id": "workbench-check-8",
+  "description": "Eight deliberately varied Wallet Assistant scenarios used to exercise the smallest end-to-end evaluation workbench. This is a diagnostic challenge cohort, not a representative quality estimate or release gate.",
+  "cases": [
+    "T001/E01",
+    "T002/E01",
+    "T006/E01",
+    "T007/E01",
+    "T008/E01",
+    "T010/E01",
+    "T011/E01",
+    "T020/E01"
+  ]
+}

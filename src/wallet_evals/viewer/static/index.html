@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Wallet trace viewer</title>
+    <link rel="stylesheet" href="/styles.css">
+  </head>
+  <body>
+    <header class="topbar">
+      <div>
+        <p class="eyebrow">wallet-evals</p>
+        <h1>Trace viewer</h1>
+      </div>
+      <div class="topbar-status">
+        <button id="theme-toggle" class="theme-toggle" type="button" aria-pressed="false">
+          Dark theme
+        </button>
+        <span class="read-only">Read only</span>
+        <span id="viewer-status" role="status">Loading saved runs…</span>
+      </div>
+    </header>
+
+    <div class="workspace">
+      <aside class="rail run-rail" aria-label="Saved runs">
+        <div class="rail-heading">
+          <h2>Saved runs</h2>
+          <span id="run-count" class="count"></span>
+        </div>
+        <p id="results-directory" class="path"></p>
+        <nav id="run-list" class="item-list"></nav>
+      </aside>
+
+      <aside class="rail case-rail" aria-label="Case traces">
+        <div class="rail-heading">
+          <h2>Case traces</h2>
+          <span id="case-count" class="count"></span>
+        </div>
+        <div id="run-summary" class="run-summary empty-state">Select a valid run.</div>
+        <nav id="case-list" class="item-list"></nav>
+      </aside>
+
+      <main id="case-view" class="case-view">
+        <section class="welcome">
+          <p class="eyebrow">Saved evidence</p>
+          <h2>Select a run and case trace</h2>
+          <p>The viewer reads captured evidence only. It does not call Wallet or change artifacts.</p>
+        </section>
+      </main>
+    </div>
+
+    <script src="/app.js" defer></script>
+  </body>
+</html>

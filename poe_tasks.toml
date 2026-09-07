@@ -30,7 +30,7 @@ help = "Alias for the read-only verification suite"
 sequence = ["verify"]
 
 [tasks.run]
-help = "Run the demo CLI"
+help = "Run the wallet-evals CLI"
 cmd = "python -m wallet_evals.cli"
 
 [tasks.secret-scan]

@@ -5,7 +5,7 @@ build-backend = "hatchling.build"
 [project]
 name = "wallet-evals"
 version = "0.1.0"
-description = "There should be description of your project."
+description = "Evidence-preserving evaluation runner for Wallet behavior."
 readme = "README.md"
 requires-python = ">=3.11"
 dependencies = [

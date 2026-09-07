@@ -26,6 +26,9 @@ pip-wheel-metadata/
 htmlcov/
 pyright_output.json
 
+# Local evaluation artifacts
+results/
+
 # Local environment files
 .env
 .env.*

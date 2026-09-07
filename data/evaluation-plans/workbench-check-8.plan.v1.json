@@ -1,0 +1,285 @@
+{
+  "schema_version": "0.1",
+  "evaluation_plan": {
+    "plan_id": "wallet-assistant-workbench-check-8",
+    "title": "Wallet Assistant workbench check",
+    "case_set_id": "workbench-check-8",
+    "brief": {
+      "stakeholder": "Wallet product and engineering team",
+      "decision_need": "Decide which core Assistant behavior gaps need investigation before treating the current configuration as a dependable development baseline.",
+      "uncertainty": "The Assistant may route or interpret ordinary wallet requests incorrectly, lose conversational state, guess under ambiguity, mishandle formatted amounts, or repeat a posted effect.",
+      "governing_question": "Within the selected diagnostic scenarios, does the Wallet Assistant route requests, preserve conversation state, clarify underdetermined input, extract important fields, and avoid repeating an already posted effect as expected?",
+      "sut_boundary": "The local Wallet conversation control layer and its wallet_state and transaction_capture AI capabilities, including the configured Ollama model and in-memory Wallet services.",
+      "expected_behavior": [
+        "A wallet-state request returns the recorded account balances without starting transaction capture.",
+        "Clear transaction requests preserve type, amount, account, category, and interaction context.",
+        "Underdetermined or ambiguous requests produce a question instead of a guessed candidate or product-visible processing failure.",
+        "A follow-up contribution completes the active draft without losing previously supplied fields.",
+        "A request to repeat a completed transaction does not silently create a second effect from private draft memory."
+      ],
+      "scope": "Exactly eight synthetic cases from workbench-check-8, executed once in isolated in-memory Wallet state under the model and SUT revision recorded in the execution artifact.",
+      "limitations": [
+        "The cohort is deliberately diagnostic and does not estimate production frequency or overall Wallet quality.",
+        "Each case is sampled once, so the result does not measure model-output variance.",
+        "The deterministic checks cover declared observable properties only and do not replace full domain-expert trace review.",
+        "The execution provenance may identify a dirty local Wallet worktree; findings apply only to the captured revision and working state."
+      ]
+    },
+    "cases": [
+      {
+        "case_id": "T001/E01",
+        "criterion_id": "wallet-state-complete",
+        "criterion": "A direct request for current wallet state returns a wallet-state view with the seeded balances and does not fail publicly.",
+        "checks": [
+          {
+            "kind": "no_http_error",
+            "check_id": "state-no-http-error",
+            "description": "Wallet completes the request without a public HTTP error"
+          },
+          {
+            "kind": "outcome_sequence",
+            "check_id": "state-outcome",
+            "description": "Wallet returns a state-shown outcome",
+            "expected": ["state_shown"]
+          },
+          {
+            "kind": "response_json_equals",
+            "check_id": "state-view",
+            "description": "The response exposes the wallet-state view",
+            "response_index": 0,
+            "path": "/outcome/view/kind",
+            "expected": "wallet_state"
+          },
+          {
+            "kind": "response_json_equals",
+            "check_id": "state-ars-total",
+            "description": "The ARS total preserves both seeded ARS account balances",
+            "response_index": 0,
+            "path": "/outcome/view/data/totals_by_currency/0/balance_minor",
+            "expected": 200000000
+          }
+        ]
+      },
+      {
+        "case_id": "T002/E01",
+        "criterion_id": "clear-expense-fields",
+        "criterion": "A clear expense request produces a confirmation preview whose structured candidate preserves the declared amount, type, account, and category.",
+        "checks": [
+          {
+            "kind": "no_http_error",
+            "check_id": "expense-no-http-error",
+            "description": "Wallet completes interpretation without a public HTTP error"
+          },
+          {
+            "kind": "outcome_sequence",
+            "check_id": "expense-preview",
+            "description": "Wallet produces one confirmation preview",
+            "expected": ["preview"]
+          },
+          {
+            "kind": "response_json_equals",
+            "check_id": "expense-type",
+            "description": "The candidate is an expense",
+            "response_index": 0,
+            "path": "/outcome/view/data/candidate/type",
+            "expected": "expense"
+          },
+          {
+            "kind": "response_json_equals",
+            "check_id": "expense-amount",
+            "description": "ARS 4,500 is represented as 450,000 minor units",
+            "response_index": 0,
+            "path": "/outcome/view/data/candidate/amount_minor",
+            "expected": 450000
+          },
+          {
+            "kind": "response_json_equals",
+            "check_id": "expense-account",
+            "description": "The candidate uses Cash Wallet",
+            "response_index": 0,
+            "path": "/outcome/view/data/candidate/account_id",
+            "expected": "eval_account_001"
+          },
+          {
+            "kind": "response_json_equals",
+            "check_id": "expense-category",
+            "description": "The candidate uses Food > Groceries",
+            "response_index": 0,
+            "path": "/outcome/view/data/candidate/spending_category_id",
+            "expected": "category_food_groceries"
+          }
+        ]
+      },
+      {
+        "case_id": "T006/E01",
+        "criterion_id": "missing-transfer-endpoint",
+        "criterion": "A transfer missing its destination preserves supplied fields and asks for the missing destination instead of guessing it.",
+        "checks": [
+          {
+            "kind": "no_http_error",
+            "check_id": "missing-transfer-no-http-error",
+            "description": "Wallet handles the incomplete request without a public HTTP error"
+          },
+          {
+            "kind": "outcome_sequence",
+            "check_id": "missing-transfer-question",
+            "description": "Wallet asks a question",
+            "expected": ["question"]
+          },
+          {
+            "kind": "response_json_equals",
+            "check_id": "missing-transfer-source",
+            "description": "The supplied source account remains bound",
+            "response_index": 0,
+            "path": "/outcome/view/data/candidate/source_account_id",
+            "expected": "eval_account_001"
+          },
+          {
+            "kind": "response_json_equals",
+            "check_id": "missing-transfer-destination",
+            "description": "The missing destination remains unknown",
+            "response_index": 0,
+            "path": "/outcome/view/data/candidate/destination_account_id",
+            "expected": null
+          }
+        ]
+      },
+      {
+        "case_id": "T007/E01",
+        "criterion_id": "transfer-follow-up",
+        "criterion": "A slot-only follow-up completes the existing transfer draft while preserving its source and amount.",
+        "checks": [
+          {
+            "kind": "no_http_error",
+            "check_id": "follow-up-no-http-error",
+            "description": "Both turns complete without a public HTTP error"
+          },
+          {
+            "kind": "outcome_sequence",
+            "check_id": "follow-up-outcomes",
+            "description": "The first turn asks for the endpoint and the follow-up produces a preview",
+            "expected": ["question", "preview"]
+          },
+          {
+            "kind": "response_json_equals",
+            "check_id": "follow-up-source",
+            "description": "The completed draft preserves Main account as source",
+            "response_index": 1,
+            "path": "/outcome/view/data/candidate/source_account_id",
+            "expected": "eval_account_001"
+          },
+          {
+            "kind": "response_json_equals",
+            "check_id": "follow-up-destination",
+            "description": "The follow-up binds Cash Wallet as destination",
+            "response_index": 1,
+            "path": "/outcome/view/data/candidate/destination_account_id",
+            "expected": "eval_account_002"
+          },
+          {
+            "kind": "response_json_equals",
+            "check_id": "follow-up-amount",
+            "description": "The completed draft preserves ARS 120 as 12,000 minor units",
+            "response_index": 1,
+            "path": "/outcome/view/data/candidate/amount_minor",
+            "expected": 12000
+          }
+        ]
+      },
+      {
+        "case_id": "T008/E01",
+        "criterion_id": "self-corrected-expense",
+        "criterion": "An internally corrected expense uses only the final amount and retains the other explicit fields.",
+        "checks": [
+          {
+            "kind": "no_http_error",
+            "check_id": "correction-no-http-error",
+            "description": "Wallet handles the correction without a public HTTP error"
+          },
+          {
+            "kind": "outcome_sequence",
+            "check_id": "correction-preview",
+            "description": "Wallet produces one confirmation preview",
+            "expected": ["preview"]
+          },
+          {
+            "kind": "response_json_equals",
+            "check_id": "correction-amount",
+            "description": "The final ARS 5,400 value is represented as 540,000 minor units",
+            "response_index": 0,
+            "path": "/outcome/view/data/candidate/amount_minor",
+            "expected": 540000
+          },
+          {
+            "kind": "response_json_equals",
+            "check_id": "correction-type",
+            "description": "The corrected candidate remains an expense",
+            "response_index": 0,
+            "path": "/outcome/view/data/candidate/type",
+            "expected": "expense"
+          }
+        ]
+      },
+      {
+        "case_id": "T010/E01",
+        "criterion_id": "ambiguous-transfer-source",
+        "criterion": "An ambiguous transfer source produces a clarification question without choosing an account or failing publicly.",
+        "checks": [
+          {
+            "kind": "no_http_error",
+            "check_id": "ambiguous-source-no-http-error",
+            "description": "Wallet handles ambiguity without a public HTTP error"
+          },
+          {
+            "kind": "outcome_sequence",
+            "check_id": "ambiguous-source-question",
+            "description": "Wallet asks for clarification",
+            "expected": ["question"]
+          }
+        ]
+      },
+      {
+        "case_id": "T011/E01",
+        "criterion_id": "ambiguous-transaction-type",
+        "criterion": "A monetary event with no determinate direction or transaction type produces a clarification question rather than a guessed transaction.",
+        "checks": [
+          {
+            "kind": "no_http_error",
+            "check_id": "ambiguous-type-no-http-error",
+            "description": "Wallet handles the underdetermined event without a public HTTP error"
+          },
+          {
+            "kind": "outcome_sequence",
+            "check_id": "ambiguous-type-question",
+            "description": "Wallet asks the user to determine transaction meaning",
+            "expected": ["question"]
+          }
+        ]
+      },
+      {
+        "case_id": "T020/E01",
+        "criterion_id": "no-completed-transaction-replay",
+        "criterion": "After one expense is confirmed, a reference-only repetition does not recreate the completed draft or post a second ledger effect.",
+        "checks": [
+          {
+            "kind": "no_http_error",
+            "check_id": "repetition-no-http-error",
+            "description": "The full sequence completes without a public HTTP error"
+          },
+          {
+            "kind": "outcome_sequence",
+            "check_id": "repetition-outcomes",
+            "description": "The expense is previewed and recorded, then the repetition remains a question",
+            "expected": ["preview", "recorded", "question"]
+          },
+          {
+            "kind": "observable_change_count",
+            "check_id": "repetition-one-effect",
+            "description": "Only the explicitly confirmed expense changes the ledger",
+            "expected": 1
+          }
+        ]
+      }
+    ]
+  }
+}

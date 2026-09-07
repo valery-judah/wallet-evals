@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Wallet dataset viewer</title>
+    <link rel="stylesheet" href="styles.css">
+  </head>
+  <body>
+    <header class="topbar">
+      <div>
+        <p class="eyebrow">wallet-evals</p>
+        <h1>Dataset viewer</h1>
+      </div>
+      <div class="topbar-actions">
+        <button id="source-open" class="quiet-button" type="button">Exact source</button>
+        <button id="theme-toggle" class="quiet-button" type="button" aria-pressed="false">
+          Dark theme
+        </button>
+        <span class="read-only">Read only</span>
+      </div>
+    </header>
+
+    <nav class="tabs" aria-label="Dataset views">
+      <button type="button" data-view="overview" aria-current="page">Overview</button>
+      <button type="button" data-view="statistics">Statistics</button>
+      <button type="button" data-view="dimensions">Dimensions</button>
+      <button type="button" data-view="tuples">Tuples</button>
+      <button type="button" data-view="cases">Cases</button>
+    </nav>
+
+    <section class="filters" aria-label="Dataset filters">
+      <label class="search-field">
+        <span>Search</span>
+        <input id="search-filter" type="search" placeholder="Case ID, message, purpose, failure…">
+      </label>
+      <label>
+        <span>Dimension</span>
+        <select id="dimension-filter"><option value="">All dimensions</option></select>
+      </label>
+      <label>
+        <span>Value</span>
+        <select id="value-filter" disabled><option value="">All values</option></select>
+      </label>
+      <label>
+        <span>Interaction</span>
+        <select id="form-filter"><option value="">All forms</option></select>
+      </label>
+      <label>
+        <span>Cohort</span>
+        <select id="cohort-filter"><option value="">All cohorts</option></select>
+      </label>
+      <button id="reset-filters" class="reset-button" type="button">Reset</button>
+    </section>
+
+    <div class="status-row">
+      <span id="viewer-status" role="status">Loading dataset…</span>
+      <span id="dataset-path" class="path"></span>
+    </div>
+
+    <main id="content" class="content" tabindex="-1"></main>
+
+    <dialog id="source-dialog" class="source-dialog">
+      <form method="dialog" class="dialog-heading">
+        <div>
+          <p class="eyebrow">Validated source</p>
+          <h2>Exact source JSON</h2>
+        </div>
+        <button class="quiet-button" type="submit">Close</button>
+      </form>
+      <label>
+        <span>Source file</span>
+        <select id="source-file"></select>
+      </label>
+      <p id="source-status" class="muted"></p>
+      <pre id="source-json" class="json-block"></pre>
+    </dialog>
+
+    <script src="app.js" defer></script>
+  </body>
+</html>

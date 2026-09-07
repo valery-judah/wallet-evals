@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Wallet evaluation workbench</title>
+    <link rel="stylesheet" href="/styles.css">
+  </head>
+  <body>
+    <header class="topbar">
+      <div>
+        <p class="eyebrow">wallet-evals · local prototype</p>
+        <h1>Evaluation workbench</h1>
+        <p class="subtitle">Choose cases, run Wallet, and inspect the captured evidence.</p>
+      </div>
+      <div class="topbar-links">
+        <a id="dataset-viewer-link" class="secondary-button" target="_blank">Dataset viewer</a>
+        <a id="trace-viewer-link" class="secondary-button" target="_blank">Trace viewer</a>
+      </div>
+    </header>
+
+    <main class="workflow">
+      <section class="stage" aria-labelledby="select-heading">
+        <div class="stage-number">1</div>
+        <div class="stage-content">
+          <div class="stage-heading">
+            <div>
+              <p class="eyebrow">Design</p>
+              <h2 id="select-heading">Select cases</h2>
+            </div>
+            <span id="selection-count" class="count-pill">0 selected</span>
+          </div>
+
+          <div class="selection-controls">
+            <label>
+              <span>Start from a case set</span>
+              <select id="cohort-select"><option value="">Choose a case set…</option></select>
+            </label>
+            <label class="search-field">
+              <span>Find a case</span>
+              <input id="case-search" type="search" placeholder="Case ID or user message">
+            </label>
+            <button id="clear-selection" class="text-button" type="button">Clear</button>
+          </div>
+
+          <p id="dataset-summary" class="muted">Loading the dataset…</p>
+          <div id="case-list" class="case-list" aria-live="polite"></div>
+        </div>
+      </section>
+
+      <section class="stage" aria-labelledby="run-heading">
+        <div class="stage-number">2</div>
+        <div class="stage-content">
+          <div class="stage-heading">
+            <div>
+              <p class="eyebrow">Exercise</p>
+              <h2 id="run-heading">Run Wallet</h2>
+            </div>
+            <span id="run-badge" class="status-pill idle">Ready</span>
+          </div>
+
+          <div class="run-controls">
+            <label>
+              <span>Model</span>
+              <input id="model-input" type="text" autocomplete="off">
+            </label>
+            <div class="sut-context">
+              <span>System under test</span>
+              <strong id="wallet-repository">Wallet</strong>
+            </div>
+            <button id="run-button" class="primary-button" type="button" disabled>
+              Run selected cases
+            </button>
+          </div>
+
+          <div id="run-panel" class="run-panel idle">
+            <div>
+              <strong id="run-title">No run started</strong>
+              <p id="run-message" class="muted">Select at least one case to begin.</p>
+            </div>
+            <div class="progress-track" aria-hidden="true"><span id="progress-bar"></span></div>
+            <details id="run-output-details">
+              <summary>Run output</summary>
+              <pre id="run-output">No output yet.</pre>
+            </details>
+          </div>
+        </div>
+      </section>
+
+      <section class="stage" aria-labelledby="inspect-heading">
+        <div class="stage-number">3</div>
+        <div class="stage-content">
+          <div class="stage-heading">
+            <div>
+              <p class="eyebrow">Understand</p>
+              <h2 id="inspect-heading">Inspect evidence</h2>
+            </div>
+            <span id="saved-run-count" class="count-pill">0 saved runs</span>
+          </div>
+
+          <div id="result-card" class="result-card empty">
+            <div>
+              <strong id="result-title">Complete a run to inspect its traces</strong>
+              <p id="result-meta" class="muted">Saved evidence remains available in the trace viewer.</p>
+            </div>
+            <a id="open-result" class="primary-button disabled" target="_blank">Open traces</a>
+          </div>
+
+          <div>
+            <h3>Recent runs</h3>
+            <div id="saved-runs" class="saved-runs"></div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <script src="/app.js" defer></script>
+  </body>
+</html>
