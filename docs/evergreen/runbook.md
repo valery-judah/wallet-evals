@@ -88,7 +88,7 @@ failed. A failed run does not save a partial result.
 
 ```bash
 uv run wallet_evals workbench \
-  --wallet-repo wallet-sut \
+  --wallet-repo ../wallet \
   --model qwen3.5:4b
 ```
 

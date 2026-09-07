@@ -29,6 +29,9 @@ pyright_output.json
 # Local evaluation artifacts
 results/
 
+# Optional local link to a Wallet checkout
+/wallet-sut
+
 # Local environment files
 .env
 .env.*

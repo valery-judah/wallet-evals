@@ -16,4 +16,4 @@
 
 The workflow ends when the evidence is saved. Correctness judgment, scoring, diagnosis, and publication are downstream and outside this workflow.
 
-**Evidence:** [Evaluation Subsystem Product Frame](/Users/val/projects/ps/wallet-evals/docs/product/evaluation-subsystem-frame.md), [Product Spec](/Users/val/projects/ps/wallet-evals/docs/product/spec.md), and [Evaluation Runner Concepts](/Users/val/projects/ps/wallet-evals/docs/product/concepts.md).
+**Evidence:** [Evaluation Subsystem Product Frame](../../docs/product/evaluation-subsystem-frame.md), [Product Spec](../../docs/product/spec.md), and [Evaluation Runner Concepts](../../docs/product/concepts.md).
