@@ -1,28 +1,40 @@
 # Agent Contract
 
+wallet-evals runs synthetic cases against Wallet, saves the evidence as run results, and shows
+that evidence in local read-only viewers. The workbench page connects case selection, one Wallet
+run, and the viewers. Wallet is a sibling checkout at `../wallet`, and runs use a local Ollama
+model.
+
 ## Canonical sources
-- `docs/evergreen/mvp.md` - product scope
-- `docs/evergreen/architecture.md` - architecture and current repo shape
-- `docs/evergreen/api-contracts.md` - stable runtime interfaces
-- `docs/evergreen/runbook.md` - local commands and operation
+
+### Repository and infrastructure
+- `README.md` - project overview and quick start
 - `docs/README.md` - docs index
+- `docs/evergreen/runbook.md` - commands, local workflows, and adapter rules
+- `data/` - the current dataset, case sets, and evaluation plans
 
-`docs/evergreen/` is canonical. `docs/delivery/` is reference-only.
+### Product and architecture
+- `docs/product/spec.md` - current product base
+- `docs/product/concepts.md` - evaluation system language
+- `docs/product/evaluation-workbench-frame.md` - current workbench product frame
+- `docs/evergreen/mvp.md` - stable product scope
+- `docs/evergreen/architecture.md` - components, runtime flow, and repository shape
+- `docs/evergreen/api-contracts.md` - CLI, library, and artifact contracts
 
-Start the product base in `docs/product/spec.md` and `docs/product/concepts.md`. Promote stable
-material into `docs/evergreen/` as it hardens.
+`docs/evergreen/` is canonical and wins when sources disagree. `docs/product/` holds product work
+in progress. `workstreams/` and `docs/product/archive/` are history only.
 
 ## Commands
-- Use `uv` as the Python command entrypoint for this repo.
-- Prefer `uv run poe <task>` for defined developer workflows; otherwise use `uv run <tool>`.
-- Do not use `pip`, `python -m pip`, `poetry`, `pipenv`, `npm`, or `npx` for repo workflows.
-- Use `make` for local DevEx and infrastructure wrappers such as Docker, Docker Compose, observability stack operations, as defined in [`Makefile`](Makefile).
-- For the full command catalog and operational guidance, use [`docs/evergreen/runbook.md`](docs/evergreen/runbook.md).
-- To inspect the current command surface directly, use `uv run poe --help` and `make help`.
+- Use `make <target>` for repository workflows and `make help` for the current catalog. Pass extra CLI options with `ARGS='...'`.
+- Make calls Poe for Python checks and the `wallet_evals` CLI for evaluation commands. If no target exists, use `uv run <tool>`.
+- Do not use `pip`, `python -m pip`, `poetry`, `pipenv`, `npm`, or `npx`.
+- `make eval-run` starts Wallet and calls local Ollama. It needs `../wallet` and the model installed.
+- `workbench-run`, `dataset-view`, and `trace-view` stay in the foreground. Run them as background processes and pass `ARGS='--no-open'` so they don't open a browser.
 
 ## Validation
-- Docs-only change: no mandatory validation; run targeted checks only if docs affect commands or generated artifacts.
-- Code change: `uv run poe verify`
+- Code change: `make verify`.
+- Change to the runner, the case-set loader, or the Wallet worker: also run `make eval-run` when Wallet and Ollama are available.
+- Docs-only change: check that the commands and links you changed exist.
 
-## Development Practices
-- Save any temporary, exploratory, or developer-experience (devex) scripts into the `scripts/devex/` directory.
+## Scratch scripts
+- Put temporary, exploratory, and devex scripts in `scripts/devex/`. `scripts/devex/run_wallet_cohort.py` is the managed Wallet worker, so don't treat it as scratch.

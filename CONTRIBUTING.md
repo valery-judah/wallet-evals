@@ -2,12 +2,12 @@
 
 ## Development setup
 ```bash
-make init
+make setup
 ```
 
 ## Quality checks
 ```bash
-uv run poe verify
+make verify
 ```
 
 ## Adding dependencies
@@ -16,5 +16,5 @@ uv run poe verify
 
 ## Pull requests
 - Keep changes small and focused.
-- Add/update tests for behavior changes.
-- Ensure `uv run poe verify` passes.
+- Add or update tests for behavior changes.
+- Make sure `make verify` passes.
